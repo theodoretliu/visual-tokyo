@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import Gallery from "./Gallery";
-import ImageView from './ImageView';
+import ImageView from "./ImageView";
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 
 function VisualTokyo() {

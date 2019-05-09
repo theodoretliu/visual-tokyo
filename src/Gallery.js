@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import ReactGallery from "react-photo-gallery";
 import data from "./static/data.json";
 
@@ -13,7 +13,7 @@ export default function Gallery(props) {
           width: datum.width
         }))}
         onClick={(e, photos) => {
-          props.history.push(`/${photos.index}`)
+          props.history.push(`/${photos.index}`);
         }}
       />
     </div>
