@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { jsx, css } from "@emotion/core";
 import data from "./static/data.json";
 
@@ -9,7 +9,7 @@ const imgFlex = css`
   margin: 0px 0px;
   height: 100%;
   width: 100%;
-  padding: 40px 20px;
+  padding: 80px 20px;
   box-sizing: border-box;
 `;
 
@@ -33,19 +33,19 @@ const imageContainer = css`
   justify-contents: space-between;
   height: 100vh;
   width: 100%;
-  font-size: 50px;
+  font-size: 30px;
   color: white;
+`;
 
-  i {
-    padding: 20px;
-    display: block;
-    cursor: pointer;
-  }
+const iStyle = css`
+  padding: 20px;
+  display: block;
+  cursor: pointer;
 `;
 
 const infoContainer = css`
   box-sizing: border-box;
-  padding: 0px 20px;
+  padding: 20px;
   max-width: 1000px;
   margin: 0px auto;
 `;
@@ -62,6 +62,8 @@ export default function ImageView(props) {
   let currentIndex = parseInt(props.match.params.image);
   let nextIndex = (currentIndex + 1) % data.length;
   let previousIndex = (currentIndex - 1 + data.length) % data.length;
+  let galleryRef = useRef(null);
+  let infoRef = useRef(null);
 
   function flip() {
     setFlip(!isFlipped);
@@ -81,19 +83,35 @@ export default function ImageView(props) {
     props.history.push("/");
   }
 
+  function scrollToImage() {
+    if (galleryRef) {
+      galleryRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
+  function scrollToInfo() {
+    if (infoRef) {
+      infoRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0);
     window.onkeydown = e => {
       switch (e.key) {
-        case " ": // spacebar
-        case "ArrowUp": // up arrow
-        case "ArrowDown": // down arrow
+        case " ":
           flip();
           return false;
-        case "ArrowLeft": // left arrow
+        case "ArrowUp":
+          scrollToImage();
+          return false;
+        case "ArrowDown":
+          scrollToInfo();
+          return false;
+        case "ArrowLeft":
           previousPage();
           return false;
-        case "ArrowRight": // right arrow
+        case "ArrowRight":
           nextPage();
           return false;
         case "Escape":
@@ -113,8 +131,25 @@ export default function ImageView(props) {
 
   return (
     <div>
-      <div css={imageContainer}>
-        <i className="fas fa-chevron-left" onClick={previousPage} />
+      <div css={imageContainer} ref={galleryRef}>
+        <i
+          css={css`
+            position: absolute;
+            font-size: 20px;
+            top: 0px;
+            left: 0px;
+            padding: 20px;
+            cursor: pointer;
+            color: white;
+          `}
+          className="fas fa-arrow-left"
+          onClick={goHome}
+        />
+        <i
+          css={iStyle}
+          className="fas fa-chevron-left"
+          onClick={previousPage}
+        />
         <div css={imgFlex}>
           <img
             css={[imgStyle].concat(isFlipped ? [hide] : [])}
@@ -127,13 +162,37 @@ export default function ImageView(props) {
             src={require(`./static/${datum.src_back}`)}
             onClick={flip}
           />
+          <i
+            css={css`
+              position: absolute;
+              left: calc(50% - 83.75px / 2);
+              bottom: 10px;
+              padding: 0px;
+              cursor: pointer;
+            `}
+            className="fas fa-chevron-down"
+            onClick={scrollToInfo}
+          />
         </div>
-        <i className="fas fa-chevron-right" onClick={nextPage} />
+        <i css={iStyle} className="fas fa-chevron-right" onClick={nextPage} />
       </div>
-      <div css={infoContainer}>
-        <h1>
+      <div css={infoContainer} ref={infoRef}>
+        <h1
+          css={css`
+            margin: 0px;
+            display: inline-block;
+          `}
+        >
           {datum.title_japanese} ({datum.title_english})
-        </h1>
+        </h1>{" "}
+        <h2
+          css={css`
+            display: inline-block;
+            margin: 0px;
+          `}
+        >
+          {datum.year}
+        </h2>
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ export default function Gallery(props) {
           height: datum.height,
           width: datum.width
         }))}
-        onClick={(e, photos) => {
+        onClick={(_e, photos) => {
           props.history.push(`/${photos.index}`);
         }}
       />
