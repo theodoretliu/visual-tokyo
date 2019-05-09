@@ -3,14 +3,57 @@ import { useState, useEffect } from "react";
 import { jsx, css } from "@emotion/core";
 import data from "./static/data.json";
 
+const imgFlex = css`
+  display: flex;
+  align-items: center;
+  margin: 0px 0px;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+`;
+
 const imgStyle = css`
-  max-height: 100vh;
+  max-height: 100%;
   max-width: 100%;
-  object-fit: cover;
+  display: block;
+  box-sizing: border-box;
+  padding: 20px;
+  margin: 0px auto;
 `;
 
 const hide = css`
   display: none;
+`;
+
+const imageContainer = css`
+  display: flex;
+  background: black;
+  flex-direction: row;
+  align-items: center;
+  justify-contents: space-between;
+  height: 100vh;
+  width: 100%;
+  font-size: 50px;
+  color: white;
+
+  i {
+    padding: 10px;
+    display: block;
+  }
+`;
+
+const infoContainer = css`
+  box-sizing: border-box;
+  padding: 0px 20px;
+  max-width: 1000px;
+  margin: 0px auto;
+`;
+
+const hint = css`
+  position: absolute;
+  bottom: 0px;
+  color: white;
+  padding: 5px;
 `;
 
 export default function ImageView(props) {
@@ -19,6 +62,24 @@ export default function ImageView(props) {
   let nextIndex = (currentIndex + 1) % data.length;
   let previousIndex = (currentIndex - 1 + data.length) % data.length;
 
+  function flip() {
+    setFlip(!isFlipped);
+  }
+
+  function previousPage() {
+    props.history.push(`/${previousIndex}`);
+    setFlip(false);
+  }
+
+  function nextPage() {
+    props.history.push(`/${nextIndex}`);
+    setFlip(false);
+  }
+
+  function goHome() {
+    props.history.push("/");
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0);
     window.onkeydown = e => {
@@ -26,18 +87,16 @@ export default function ImageView(props) {
         case " ": // spacebar
         case "ArrowUp": // up arrow
         case "ArrowDown": // down arrow
-          setFlip(!isFlipped);
+          flip();
           return false;
         case "ArrowLeft": // left arrow
-          props.history.push(`/${previousIndex}`);
-          setFlip(false);
+          previousPage();
           return false;
         case "ArrowRight": // right arrow
-          props.history.push(`/${nextIndex}`);
-          setFlip(false);
+          nextPage();
           return false;
         case "Escape":
-          props.history.push("/");
+          goHome();
           return false;
         default:
           return true;
@@ -53,19 +112,27 @@ export default function ImageView(props) {
 
   return (
     <div>
-      <div>
-        <img
-          css={[imgStyle].concat(isFlipped ? [hide] : [])}
-          src={require(`./static/${datum.src}`)}
-          key={require(`./static/${datum.src}`)}
-        />
-        <img
-          css={[imgStyle].concat(isFlipped ? [] : [hide])}
-          src={require(`./static/${datum.src_back}`)}
-        />
+      <div css={imageContainer}>
+        <i className="fas fa-chevron-left" />
+        <div css={imgFlex}>
+          <img
+            css={[imgStyle].concat(isFlipped ? [hide] : [])}
+            src={require(`./static/${datum.src}`)}
+            key={require(`./static/${datum.src}`)}
+            onClick={flip}
+          />
+          <img
+            css={[imgStyle].concat(isFlipped ? [] : [hide])}
+            src={require(`./static/${datum.src_back}`)}
+            onClick={flip}
+          />
+        </div>
+        <i className="fas fa-chevron-right" />
       </div>
-      <div>
-        <h1>{datum.title_japanese}</h1>
+      <div css={infoContainer}>
+        <h1>
+          {datum.title_japanese} ({datum.title_english})
+        </h1>
       </div>
     </div>
   );
