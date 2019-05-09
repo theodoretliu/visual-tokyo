@@ -7,18 +7,18 @@ const imgFlex = css`
   display: flex;
   align-items: center;
   margin: 0px 0px;
-  cursor: pointer;
   height: 100%;
   width: 100%;
+  padding: 40px 20px;
+  box-sizing: border-box;
 `;
 
 const imgStyle = css`
   max-height: 100%;
   max-width: 100%;
   display: block;
-  box-sizing: border-box;
-  padding: 20px;
   margin: 0px auto;
+  cursor: pointer;
 `;
 
 const hide = css`
@@ -37,8 +37,9 @@ const imageContainer = css`
   color: white;
 
   i {
-    padding: 10px;
+    padding: 20px;
     display: block;
+    cursor: pointer;
   }
 `;
 
@@ -113,7 +114,7 @@ export default function ImageView(props) {
   return (
     <div>
       <div css={imageContainer}>
-        <i className="fas fa-chevron-left" />
+        <i className="fas fa-chevron-left" onClick={previousPage} />
         <div css={imgFlex}>
           <img
             css={[imgStyle].concat(isFlipped ? [hide] : [])}
@@ -127,7 +128,7 @@ export default function ImageView(props) {
             onClick={flip}
           />
         </div>
-        <i className="fas fa-chevron-right" />
+        <i className="fas fa-chevron-right" onClick={nextPage} />
       </div>
       <div css={infoContainer}>
         <h1>
