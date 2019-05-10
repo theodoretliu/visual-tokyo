@@ -9,6 +9,7 @@ const wrapper = css`
   max-width: 1300px;
   padding: 0px 20px;
   margin: 0px auto;
+  padding-bottom: 20px;
 `;
 
 export default function Gallery(props) {
