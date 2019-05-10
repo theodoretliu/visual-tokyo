@@ -5,6 +5,7 @@ import { jsx, css } from "@emotion/core";
 import data from "./static/data.json";
 import Gallery from "react-photo-gallery";
 import { stripUrl } from "./utils";
+import { Redirect, withRouter } from "react-router-dom";
 
 const imgFlex = css`
   display: flex;
@@ -53,18 +54,11 @@ const infoContainer = css`
   margin: 0px auto;
 `;
 
-export default function ImageView(props) {
+function ImageInteraction({ currentIndex, history }) {
   let [isFlipped, setFlip] = useState(false);
-  let currentImage = `${props.match.params.image}.jpg`;
 
-  let currentIndex = 0;
-
-  for (let i = 0; i < data.length; ++i) {
-    if (data[i].src === currentImage) {
-      currentIndex = i;
-      break;
-    }
-  }
+  let galleryRef = useRef(null);
+  let infoRef = useRef(null);
 
   let datum = data[currentIndex];
 
@@ -74,25 +68,22 @@ export default function ImageView(props) {
   let nextImage = data[nextIndex].src.replace(".jpg", "");
   let prevImage = data[previousIndex].src.replace(".jpg", "");
 
-  let galleryRef = useRef(null);
-  let infoRef = useRef(null);
-
   function flip() {
     setFlip(!isFlipped);
   }
 
   function previousPage() {
-    props.history.push(`/${prevImage}`);
+    history.push(`/${prevImage}`);
     setFlip(false);
   }
 
   function nextPage() {
-    props.history.push(`/${nextImage}`);
+    history.push(`/${nextImage}`);
     setFlip(false);
   }
 
   function goHome() {
-    props.history.push("/");
+    history.push("/");
   }
 
   function scrollToImage() {
@@ -106,7 +97,6 @@ export default function ImageView(props) {
       infoRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }
-
   useEffect(() => {
     window.onkeydown = e => {
       switch (e.key) {
@@ -228,7 +218,7 @@ export default function ImageView(props) {
             <Gallery
               photos={relatedImages}
               onClick={(_e, photos) => {
-                props.history.push(`/${stripUrl(photos.photo.src)}`);
+                history.push(`/${stripUrl(photos.photo.src)}`);
                 window.scrollTo({
                   top: 0,
                   left: 0,
@@ -241,4 +231,25 @@ export default function ImageView(props) {
       </div>
     </div>
   );
+}
+
+const ImageInteractionWithRouter = withRouter(ImageInteraction);
+
+export default function ImageView(props) {
+  let currentImage = `${props.match.params.image}.jpg`;
+
+  let currentIndex = -1;
+
+  for (let i = 0; i < data.length; ++i) {
+    if (data[i].src === currentImage) {
+      currentIndex = i;
+      break;
+    }
+  }
+
+  if (currentIndex === -1) {
+    return <Redirect to="/" />;
+  }
+
+  return <ImageInteractionWithRouter currentIndex={currentIndex} />;
 }
