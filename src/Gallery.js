@@ -18,7 +18,7 @@ export default function Gallery(props) {
       <h1>Shufu no Tomo</h1>
       <ReactGallery
         photos={data.map(datum => ({
-          src: require(`./static/${datum.src}`),
+          src: require(`./static/thumbs/${datum.src}`),
           height: datum.height,
           width: datum.width
         }))}

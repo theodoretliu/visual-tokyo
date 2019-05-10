@@ -153,7 +153,7 @@ export default function ImageView(props) {
       return false;
     })
     .map(datum => ({
-      src: require(`./static/${datum.src}`),
+      src: require(`./static/thumbs/${datum.src}`),
       height: datum.height,
       width: datum.width
     }));
