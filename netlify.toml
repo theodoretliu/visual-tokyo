@@ -2,3 +2,8 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "http://pensive-stonebraker-5ee769.netlify.com/*"
+  to = "http://visualtokyo.org/:splat"
+  status = 301
