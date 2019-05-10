@@ -2,6 +2,7 @@
 import { jsx, css } from "@emotion/core";
 import ReactGallery from "react-photo-gallery";
 import data from "./static/data.json";
+import { stripUrl } from "./utils";
 
 const wrapper = css`
   box-sizing: border-box;
@@ -21,7 +22,7 @@ export default function Gallery(props) {
           width: datum.width
         }))}
         onClick={(_e, photos) => {
-          props.history.push(`/${photos.index}`);
+          props.history.push(`/${stripUrl(photos.photo.src)}`);
         }}
       />
     </div>

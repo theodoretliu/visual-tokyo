@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Global } from "@emotion/core";
+import { jsx } from "@emotion/core";
 import Gallery from "./Gallery";
 import ImageView from "./ImageView";
 import { Switch, Route, BrowserRouter } from "react-router-dom";

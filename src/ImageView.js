@@ -1,7 +1,10 @@
 /** @jsx jsx */
 import { useState, useEffect, useRef } from "react";
+import React from "react";
 import { jsx, css } from "@emotion/core";
 import data from "./static/data.json";
+import Gallery from "react-photo-gallery";
+import { stripUrl } from "./utils";
 
 const imgFlex = css`
   display: flex;
@@ -9,7 +12,7 @@ const imgFlex = css`
   margin: 0px 0px;
   height: 100%;
   width: 100%;
-  padding: 80px 20px;
+  padding: 50px 20px;
   box-sizing: border-box;
 `;
 
@@ -50,18 +53,27 @@ const infoContainer = css`
   margin: 0px auto;
 `;
 
-const hint = css`
-  position: absolute;
-  bottom: 0px;
-  color: white;
-  padding: 5px;
-`;
-
 export default function ImageView(props) {
   let [isFlipped, setFlip] = useState(false);
-  let currentIndex = parseInt(props.match.params.image);
+  let currentImage = `${props.match.params.image}.jpg`;
+
+  let currentIndex = 0;
+
+  for (let i = 0; i < data.length; ++i) {
+    if (data[i].src === currentImage) {
+      currentIndex = i;
+      break;
+    }
+  }
+
+  let datum = data[currentIndex];
+
   let nextIndex = (currentIndex + 1) % data.length;
   let previousIndex = (currentIndex - 1 + data.length) % data.length;
+
+  let nextImage = data[nextIndex].src.replace(".jpg", "");
+  let prevImage = data[previousIndex].src.replace(".jpg", "");
+
   let galleryRef = useRef(null);
   let infoRef = useRef(null);
 
@@ -70,12 +82,12 @@ export default function ImageView(props) {
   }
 
   function previousPage() {
-    props.history.push(`/${previousIndex}`);
+    props.history.push(`/${prevImage}`);
     setFlip(false);
   }
 
   function nextPage() {
-    props.history.push(`/${nextIndex}`);
+    props.history.push(`/${nextImage}`);
     setFlip(false);
   }
 
@@ -96,7 +108,10 @@ export default function ImageView(props) {
   }
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (galleryRef) {
+      galleryRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+
     window.onkeydown = e => {
       switch (e.key) {
         case " ":
@@ -127,8 +142,25 @@ export default function ImageView(props) {
     };
   });
 
-  let datum = data[props.match.params.image];
+  let relatedImages = data
+    .filter(idatum => {
+      if (datum === idatum) {
+        return false;
+      }
 
+      for (let subject of datum.subjects) {
+        if (idatum.subjects.includes(subject)) {
+          return true;
+        }
+      }
+
+      return false;
+    })
+    .map(datum => ({
+      src: require(`./static/${datum.src}`),
+      height: datum.height,
+      width: datum.width
+    }));
   return (
     <div>
       <div css={imageContainer} ref={galleryRef}>
@@ -154,7 +186,6 @@ export default function ImageView(props) {
           <img
             css={[imgStyle].concat(isFlipped ? [hide] : [])}
             src={require(`./static/${datum.src}`)}
-            key={require(`./static/${datum.src}`)}
             onClick={flip}
           />
           <img
@@ -165,7 +196,7 @@ export default function ImageView(props) {
           <i
             css={css`
               position: absolute;
-              left: calc(50% - 83.75px / 2);
+              left: calc(50% - 26.25px / 2);
               bottom: 10px;
               padding: 0px;
               cursor: pointer;
@@ -193,6 +224,17 @@ export default function ImageView(props) {
         >
           {datum.year}
         </h2>
+        {relatedImages.length === 0 ? null : (
+          <React.Fragment>
+            <h2>Related Images</h2>
+            <Gallery
+              photos={relatedImages}
+              onClick={(_e, photos) => {
+                props.history.push(`/${stripUrl(photos.photo.src)}`);
+              }}
+            />{" "}
+          </React.Fragment>
+        )}
       </div>
     </div>
   );
