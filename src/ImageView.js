@@ -183,11 +183,13 @@ export default function ImageView(props) {
             css={[imgStyle].concat(isFlipped ? [hide] : [])}
             src={require(`./static/${datum.src}`)}
             onClick={flip}
+            alt={datum.title_english}
           />
           <img
             css={[imgStyle].concat(isFlipped ? [] : [hide])}
             src={require(`./static/${datum.src_back}`)}
             onClick={flip}
+            alt={datum.title_english}
           />
           <i
             css={css`
