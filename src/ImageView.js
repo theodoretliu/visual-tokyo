@@ -108,10 +108,6 @@ export default function ImageView(props) {
   }
 
   useEffect(() => {
-    if (galleryRef) {
-      galleryRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-
     window.onkeydown = e => {
       switch (e.key) {
         case " ":
@@ -231,6 +227,11 @@ export default function ImageView(props) {
               photos={relatedImages}
               onClick={(_e, photos) => {
                 props.history.push(`/${stripUrl(photos.photo.src)}`);
+                window.scrollTo({
+                  top: 0,
+                  left: 0,
+                  behavior: "smooth"
+                });
               }}
             />{" "}
           </React.Fragment>

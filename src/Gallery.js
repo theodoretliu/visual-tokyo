@@ -6,7 +6,7 @@ import { stripUrl } from "./utils";
 
 const wrapper = css`
   box-sizing: border-box;
-  max-width: 1000px;
+  max-width: 1300px;
   padding: 0px 20px;
   margin: 0px auto;
 `;
@@ -23,6 +23,11 @@ export default function Gallery(props) {
         }))}
         onClick={(_e, photos) => {
           props.history.push(`/${stripUrl(photos.photo.src)}`);
+          window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth"
+          });
         }}
       />
     </div>
