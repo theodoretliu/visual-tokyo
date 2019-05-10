@@ -1,9 +1,4 @@
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
   from = "http://pensive-stonebraker-5ee769.netlify.com/*"
   to = "http://visualtokyo.org/:splat"
   status = 301
@@ -14,3 +9,8 @@
   to = "https://visualtokyo.org/:splat"
   status = 301
   force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
