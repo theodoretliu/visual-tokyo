@@ -97,6 +97,7 @@ function ImageInteraction({ currentIndex, history }) {
       infoRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }
+
   useEffect(() => {
     window.onkeydown = e => {
       switch (e.key) {
@@ -221,9 +222,9 @@ function ImageInteraction({ currentIndex, history }) {
                 history.push(`/${stripUrl(photos.photo.src)}`);
                 window.scrollTo({
                   top: 0,
-                  left: 0,
-                  behavior: "smooth"
+                  left: 0
                 });
+                setFlip(false);
               }}
             />{" "}
           </React.Fragment>
