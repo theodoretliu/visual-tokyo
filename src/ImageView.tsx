@@ -5,7 +5,7 @@ import { css } from "@emotion/react";
 import data from "./static/data.json";
 import Gallery from "react-photo-gallery";
 import { stripUrl } from "./utils";
-import { Redirect, withRouter } from "react-router-dom";
+import { Redirect, RouteComponentProps, withRouter } from "react-router-dom";
 
 const imgFlex = css`
   display: flex;
@@ -54,11 +54,15 @@ const infoContainer = css`
   margin: 0px auto;
 `;
 
-function ImageInteraction({ currentIndex, history }) {
+interface Props extends RouteComponentProps {
+  currentIndex: number;
+}
+
+function ImageInteraction({ currentIndex, history }: Props) {
   let [isFlipped, setFlip] = useState(false);
 
-  let galleryRef = useRef(null);
-  let infoRef = useRef(null);
+  let galleryRef = useRef<HTMLDivElement>(null);
+  let infoRef = useRef<HTMLDivElement>(null);
 
   let datum = data[currentIndex];
 
@@ -88,18 +92,18 @@ function ImageInteraction({ currentIndex, history }) {
 
   function scrollToImage() {
     if (galleryRef) {
-      galleryRef.current.scrollIntoView({ behavior: "smooth" });
+      galleryRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }
 
   function scrollToInfo() {
     if (infoRef) {
-      infoRef.current.scrollIntoView({ behavior: "smooth" });
+      infoRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }
 
   useEffect(() => {
-    window.onkeydown = e => {
+    window.onkeydown = (e: KeyboardEvent) => {
       switch (e.key) {
         case " ":
           flip();
@@ -130,7 +134,7 @@ function ImageInteraction({ currentIndex, history }) {
   });
 
   let relatedImages = data
-    .filter(idatum => {
+    .filter((idatum) => {
       if (datum === idatum) {
         return false;
       }
@@ -143,10 +147,10 @@ function ImageInteraction({ currentIndex, history }) {
 
       return false;
     })
-    .map(datum => ({
+    .map((datum) => ({
       src: require(`./static/thumbs/${datum.src}`).default,
       height: datum.height,
-      width: datum.width
+      width: datum.width,
     }));
   return (
     <div>
@@ -222,7 +226,7 @@ function ImageInteraction({ currentIndex, history }) {
                 history.push(`/${stripUrl(photos.photo.src)}`);
                 window.scrollTo({
                   top: 0,
-                  left: 0
+                  left: 0,
                 });
                 setFlip(false);
               }}
@@ -236,7 +240,8 @@ function ImageInteraction({ currentIndex, history }) {
 
 const ImageInteractionWithRouter = withRouter(ImageInteraction);
 
-export default function ImageView(props) {
+interface ImageViewProps extends RouteComponentProps<{ image: string }> {}
+export default function ImageView(props: ImageViewProps) {
   let currentImage = `${props.match.params.image}.jpg`;
 
   let currentIndex = -1;
