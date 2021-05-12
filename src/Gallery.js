@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from "@emotion/core";
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
 import ReactGallery from "react-photo-gallery";
 import data from "./static/data.json";
 import { stripUrl } from "./utils";
@@ -18,7 +18,7 @@ export default function Gallery(props) {
       <h1>Shufu no Tomo</h1>
       <ReactGallery
         photos={data.map(datum => ({
-          src: require(`./static/thumbs/${datum.src}`),
+          src: require(`./static/thumbs/${datum.src}`).default,
           height: datum.height,
           width: datum.width
         }))}

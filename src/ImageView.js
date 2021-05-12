@@ -1,7 +1,7 @@
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 import { useState, useEffect, useRef } from "react";
 import React from "react";
-import { jsx, css } from "@emotion/core";
+import { css } from "@emotion/react";
 import data from "./static/data.json";
 import Gallery from "react-photo-gallery";
 import { stripUrl } from "./utils";
@@ -144,7 +144,7 @@ function ImageInteraction({ currentIndex, history }) {
       return false;
     })
     .map(datum => ({
-      src: require(`./static/thumbs/${datum.src}`),
+      src: require(`./static/thumbs/${datum.src}`).default,
       height: datum.height,
       width: datum.width
     }));
@@ -172,13 +172,13 @@ function ImageInteraction({ currentIndex, history }) {
         <div css={imgFlex}>
           <img
             css={[imgStyle].concat(isFlipped ? [hide] : [])}
-            src={require(`./static/${datum.src}`)}
+            src={require(`./static/${datum.src}`).default}
             onClick={flip}
             alt={datum.title_english}
           />
           <img
             css={[imgStyle].concat(isFlipped ? [] : [hide])}
-            src={require(`./static/${datum.src_back}`)}
+            src={require(`./static/${datum.src_back}`).default}
             onClick={flip}
             alt={datum.title_english}
           />
