@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import React from "react";
 import { css } from "@emotion/react";
 import data from "./static/data.json";
-import Gallery from "react-photo-gallery";
+import Gallery from "react-photo-album";
 import { stripUrl } from "./utils";
 import { Redirect, RouteComponentProps, withRouter } from "react-router-dom";
 
@@ -69,8 +69,8 @@ function ImageInteraction({ currentIndex, history }: Props) {
   let nextIndex = (currentIndex + 1) % data.length;
   let previousIndex = (currentIndex - 1 + data.length) % data.length;
 
-  let nextImage = data[nextIndex].src.replace(".jpg", "");
-  let prevImage = data[previousIndex].src.replace(".jpg", "");
+  let nextImage = data[nextIndex].src;
+  let prevImage = data[previousIndex].src;
 
   function flip() {
     setFlip(!isFlipped);
@@ -148,7 +148,7 @@ function ImageInteraction({ currentIndex, history }: Props) {
       return false;
     })
     .map((datum) => ({
-      src: require(`./static/thumbs/${datum.src}`).default,
+      src: `/static/thumbs/${datum.src}`,
       height: datum.height,
       width: datum.width,
     }));
@@ -176,13 +176,13 @@ function ImageInteraction({ currentIndex, history }: Props) {
         <div css={imgFlex}>
           <img
             css={[imgStyle].concat(isFlipped ? [hide] : [])}
-            src={require(`./static/${datum.src}`).default}
+            src={`/static/${datum.src}`}
             onClick={flip}
             alt={datum.title_english}
           />
           <img
             css={[imgStyle].concat(isFlipped ? [] : [hide])}
-            src={require(`./static/${datum.src_back}`).default}
+            src={`/static/${datum.src_back}`}
             onClick={flip}
             alt={datum.title_english}
           />
@@ -221,15 +221,17 @@ function ImageInteraction({ currentIndex, history }: Props) {
           <React.Fragment>
             <h2>Related Images</h2>
             <Gallery
+              spacing={5}
               photos={relatedImages}
-              onClick={(_e, photos) => {
-                history.push(`/${stripUrl(photos.photo.src)}`);
+              onClick={({ photo }) => {
+                history.push(`/${stripUrl(photo.src)}`);
                 window.scrollTo({
                   top: 0,
                   left: 0,
                 });
                 setFlip(false);
               }}
+              layout="rows"
             />{" "}
           </React.Fragment>
         )}
@@ -242,7 +244,7 @@ const ImageInteractionWithRouter = withRouter(ImageInteraction);
 
 interface ImageViewProps extends RouteComponentProps<{ image: string }> {}
 export default function ImageView(props: ImageViewProps) {
-  let currentImage = `${props.match.params.image}.jpg`;
+  let currentImage = `${props.match.params.image}`;
 
   let currentIndex = -1;
 
