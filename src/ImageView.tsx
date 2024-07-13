@@ -221,6 +221,7 @@ function ImageInteraction({ currentIndex, history }: Props) {
           <React.Fragment>
             <h2>Related Images</h2>
             <Gallery
+              spacing={5}
               photos={relatedImages}
               onClick={({ photo }) => {
                 history.push(`/${stripUrl(photo.src)}`);

@@ -21,6 +21,7 @@ export default function Gallery(props: Props) {
       <h1>Shufu no Tomo</h1>
       <ReactGallery
         layout="rows"
+        spacing={5}
         photos={data.map((datum) => ({
           src: `/static/thumbs/${datum.src}`,
           height: datum.height,
