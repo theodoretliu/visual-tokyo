@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import ReactGallery from "react-photo-gallery";
+import ReactGallery from "react-photo-album";
 import data from "./static/data.json";
 import { stripUrl } from "./utils";
 import { RouteComponentProps } from "react-router-dom";
@@ -20,13 +20,15 @@ export default function Gallery(props: Props) {
     <div css={wrapper}>
       <h1>Shufu no Tomo</h1>
       <ReactGallery
+        layout="rows"
         photos={data.map((datum) => ({
-          src: require(`./static/thumbs/${datum.src}`).default,
+          src: `/static/thumbs/${datum.src}`,
           height: datum.height,
           width: datum.width,
         }))}
-        onClick={(_e, photos) => {
-          props.history.push(`/${stripUrl(photos.photo.src)}`);
+        onClick={({ photo }) => {
+          console.log("here", stripUrl(photo.src), photo);
+          props.history.push(`/${stripUrl(photo.src)}`);
           window.scrollTo({
             top: 0,
             left: 0,
